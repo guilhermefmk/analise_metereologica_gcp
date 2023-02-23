@@ -1,0 +1,57 @@
+###
+### A complete description of a Prefect Deployment for flow 'etl-parent-flow'
+###
+name: to_gcs_poo
+description: null
+version: db00b6dea0debf94142e0daf17fc350e
+# The work queue that will handle this deployment's runs
+work_queue_name: default
+tags: []
+parameters: {}
+schedule: null
+infra_overrides: {}
+
+###
+### DO NOT EDIT BELOW THIS LINE
+###
+flow_name: etl-parent-flow
+manifest_path: null
+infrastructure:
+  type: process
+  env: {}
+  labels: {}
+  name: null
+  command: null
+  stream_output: true
+  working_dir: null
+  _block_document_id: 64a41799-da58-44c5-81dd-9b3d5f985e87
+  _block_document_name: anonymous-8db8e81c-c7c4-43c9-b122-b5c5c135a7fc
+  _is_anonymous: true
+  block_type_slug: process
+  _block_type_slug: process
+storage: null
+path: C:\Users\Guilherme\Documents\WORKSPACE\desafio_wecode
+entrypoint: poo.py:etl_parent_flow
+parameter_openapi_schema:
+  title: Parameters
+  type: object
+  properties:
+    cidade:
+      title: cidade
+      default: Rio Grande
+      position: 0
+      type: string
+    anos:
+      title: anos
+      default:
+      - 2019
+      - 2020
+      - 2021
+      - 2022
+      - 2023
+      position: 1
+      type: array
+      items:
+        type: integer
+  required: null
+  definitions: null
