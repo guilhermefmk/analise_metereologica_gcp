@@ -16,7 +16,6 @@ class ETL:
 
     @task(retries=3, log_prints=True)
     def fetch(self, url: str) -> pd.DataFrame:
-        '''Read taxi data from web into pandas DF'''
         response = requests.get(url)
         data = response.json()
         df = pd.DataFrame(data["data"])
@@ -24,7 +23,6 @@ class ETL:
 
     @task(retries=3, log_prints=True)
     def transform(self, df: pd.DataFrame) -> pd.DataFrame:
-        '''Read taxi data from web into pandas DF'''
         df['datetime'] = pd.to_datetime(df['datetime'])
         df['year'] = df['datetime'].dt.year
         df['month'] = df['datetime'].dt.month
