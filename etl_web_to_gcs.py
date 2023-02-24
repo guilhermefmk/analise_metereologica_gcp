@@ -7,7 +7,7 @@ import os
 
 @task(retries=3,log_prints=True)
 def fetch(url: str) -> pd.DataFrame:
-    '''Read taxi data from web into pandas DF'''
+    '''Read weather data from web into pandas DF'''
     response = requests.get(url)
     data = response.json()
     df = pd.DataFrame(data["data"])
@@ -15,7 +15,7 @@ def fetch(url: str) -> pd.DataFrame:
 
 @task(retries=3,log_prints=True)
 def transform(df: pd.DataFrame) -> pd.DataFrame:
-    '''Read taxi data from web into pandas DF'''
+    '''Transform weather data and returns a new DF'''
     df['datetime'] = pd.to_datetime(df['datetime'])
     df['year'] = df['datetime'].dt.year
     df['month'] = df['datetime'].dt.month
@@ -23,7 +23,7 @@ def transform(df: pd.DataFrame) -> pd.DataFrame:
 
 @task()
 def write_local(df: pd.DataFrame, ano) -> str:
-    '''Write DataFrame out locally as parquet file'''
+    '''Writes the data in a pandas DataFrame to a local parquet file'''
     nome_arquivo = f'{ano}'
     folder_path = 'data'
     dir_path = os.path.join(folder_path, 'weatherbit')
@@ -35,7 +35,7 @@ def write_local(df: pd.DataFrame, ano) -> str:
 
     df.to_parquet(path, compression='gzip')
     return path
-    #df.to_parquet(path, engine='pyarrow', partition_cols=['year', 'month'])
+    
 
 @task(log_prints=True)
 def write_gcs(path: str) -> None:
@@ -48,7 +48,7 @@ def write_gcs(path: str) -> None:
 
 @flow()
 def etl_web_to_gcs(cidade: str, ano: int) -> pd.DataFrame:
-    ''' Main ETL funtion '''
+    ''' Main flow that orchestrates the ETL process '''
     key_weather = os.environ.get('WEATHERBIT_API')
     data_atual = datetime.now()
 
@@ -65,9 +65,11 @@ def etl_web_to_gcs(cidade: str, ano: int) -> pd.DataFrame:
 
 @flow(log_prints=True)
 def etl_parent_flow(cidade: str = "Rio Grande", anos : list[int] = [2019,2020,2021,2022,2023]):
+    '''Calls the main flow for a list of years'''
     for ano in anos:
         etl_web_to_gcs(cidade,ano)
 
 
 if __name__ == '__main__':
+    ''' entry point of the program '''
     etl_parent_flow("Rio grande", [2019,2020,2021,2022,2023])
